@@ -1,24 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Theme switching functionality
-    const themeBtn = document.getElementById('theme-switch');
-    const htmlElement = document.documentElement;
-
-    const savedTheme = localStorage.getItem('theme') || 
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-
-    applyTheme(savedTheme);
-
-    themeBtn.addEventListener('click', () => {
-        const currentTheme = htmlElement.getAttribute('data-theme');
-        applyTheme(currentTheme === 'light' ? 'dark' : 'light');
-    });
-
-    function applyTheme(theme) {
-        htmlElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-    }
-
     const startQuizBtn = document.getElementById("start-quiz");
     const questionCountInput = document.getElementById("question-count");
     const quizContainer = document.getElementById("quiz-container");
@@ -48,7 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        quizQuestions = allQuestions.slice(0, totalQuestions);
+        // Get random questions from allQuestions array
+        quizQuestions = [...allQuestions]
+            .sort(() => Math.random() - 0.5)
+            .slice(0, totalQuestions);
+        
         currentQuestionIndex = 0;
         selectedAnswers = [];
 
@@ -65,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const questionData = quizQuestions[currentQuestionIndex];
-        questionContainer.innerHTML = `<h2>${questionData.question}</h2>`;
+        questionContainer.innerHTML = `<h2>Question ${currentQuestionIndex + 1}: ${questionData.question}</h2>`;
         optionsContainer.innerHTML = "";
 
         questionData.options.forEach((option, index) => {
@@ -86,73 +70,63 @@ document.addEventListener("DOMContentLoaded", () => {
     retakeQuizBtn.addEventListener("click", () => {
         quizContainer.classList.add("hidden");
         resultsContainer.classList.add("hidden");
+        document.getElementById("quiz-setup").classList.remove("hidden");
     });
 
     function showResults() {
         quizContainer.classList.add("hidden");
         resultsContainer.classList.remove("hidden");
 
-        // Calculate personality type
-        const personalityIndex = selectedAnswers.reduce((sum, val) => sum + val, 0) % 4;
-        const personalityType = Object.keys(personalityProfiles)[personalityIndex];
+        // Calculate personality type based on answers
+        const personalities = Object.keys(personalityProfiles);
+        const personalityIndex = selectedAnswers.reduce((sum, val) => sum + val, 0) % personalities.length;
+        const personalityType = personalities[personalityIndex];
+
+        // Get personality profile
         const profile = personalityProfiles[personalityType];
 
-        // Collect insights from answers
-        const insights = selectedAnswers.map((answer, index) => 
-            quizQuestions[index].insights[answer]
-        );
-
-        // Display detailed results
+        // Display detailed result
         resultContent.innerHTML = `
-            <div class="personality-result">
-                <h3>${profile.title}</h3>
-                <p class="main-message">${profile.message}</p>
-                
-                <div class="insights-section">
-                    <h4>Your Response Insights:</h4>
-                    <ul class="insights-list">
-                        ${insights.map(insight => `<li>${insight}</li>`).join('')}
-                    </ul>
-                </div>
+            <h3>${profile.title}</h3>
+            <p class="message">${profile.message}</p>
+            
+            <div class="profile-section">
+                <h4>Your Key Strengths:</h4>
+                <ul>
+                    ${profile.strengths.map(strength => `<li>${strength}</li>`).join('')}
+                </ul>
+            </div>
 
-                <div class="strengths-section">
-                    <h4>Your Key Strengths:</h4>
-                    <ul class="strengths-list">
-                        ${profile.strengths.map(strength => `<li>${strength}</li>`).join('')}
-                    </ul>
-                </div>
+            <div class="profile-section">
+                <h4>Career Paths That Suit You:</h4>
+                <ul>
+                    ${profile.career.map(career => `<li>${career}</li>`).join('')}
+                </ul>
+            </div>
 
-                <div class="career-section">
-                    <h4>Recommended Career Paths:</h4>
-                    <ul class="career-list">
-                        ${profile.career.map(career => `<li>${career}</li>`).join('')}
-                    </ul>
-                </div>
+            <div class="profile-section">
+                <h4>In Relationships:</h4>
+                <p>${profile.relationships}</p>
+            </div>
 
-                <div class="relationship-section">
-                    <h4>In Relationships:</h4>
-                    <p>${profile.relationships}</p>
-                </div>
+            <div class="profile-section">
+                <h4>Area for Growth:</h4>
+                <p>${profile.growth}</p>
+            </div>
 
-                <div class="growth-section">
-                    <h4>Growth Opportunity:</h4>
-                    <p>${profile.growth}</p>
-                </div>
-
-                <div class="quote-section">
-                    <blockquote>${profile.quote}</blockquote>
-                </div>
+            <div class="quote-section">
+                <blockquote>${profile.quote}</blockquote>
             </div>
         `;
 
         // Add share button event listeners
         document.querySelectorAll('.share-btn').forEach(btn => {
-            btn.addEventListener('click', () => shareResult(btn.dataset.platform, profile.title));
+            btn.addEventListener('click', () => shareResult(btn.dataset.platform, personalityType));
         });
     }
 
     function shareResult(platform, personalityType) {
-        const text = `I got ${personalityType} personality type in this amazing quiz!`;
+        const text = `I got "${personalityProfiles[personalityType].title}" in this amazing personality quiz!`;
         const url = window.location.href;
         let shareUrl;
 
