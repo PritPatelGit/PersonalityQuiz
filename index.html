@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title class="head">Personality Quiz</title>
+    <title>Personality Quiz</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="images/QuizCover.jpeg">
     
@@ -77,6 +77,7 @@
             height: 100%;
             background: var(--gradient);
             transition: width 0.5s ease;
+            width: 0;
         }
 
         .btn {
@@ -127,34 +128,6 @@
             display: none;
         }
 
-        /* Theme Toggle Button */
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-        }
-
-        .theme-btn {
-            background: var(--card-bg);
-            border: 2px solid var(--primary-color);
-            color: var(--text-color);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .theme-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px var(--primary-color);
-        }
-
-        /* Input Styling */
         #question-count {
             background: rgba(0, 163, 255, 0.1);
             border: 2px solid var(--primary-color);
@@ -167,7 +140,6 @@
             margin: 1rem 0;
         }
 
-        /* Results Styling */
         #result-content {
             margin: 2rem 0;
             padding: 1rem;
@@ -182,7 +154,43 @@
             margin-bottom: 1rem;
         }
 
-        /* Mobile Responsiveness */
+        .profile-section {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(0, 163, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .profile-section h4 {
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-section ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .profile-section li {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .profile-section li:before {
+            content: "•";
+            color: var(--accent-color);
+            position: absolute;
+            left: 0;
+        }
+
+        .quote-section {
+            margin-top: 2rem;
+            font-style: italic;
+            text-align: center;
+            color: var(--accent-color);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -206,11 +214,6 @@
     </style>
 </head>
 <body>
-    <div class="theme-toggle">
-        <button id="theme-switch" class="theme-btn">
-            <i class="fas fa-moon"></i>
-        </button>
-    </div>
     <div class="container">
         <header>
             <h1>Personality Quiz</h1>
@@ -218,8 +221,8 @@
         </header>
 
         <div id="quiz-setup">
-            <label for="question-count">How many questions do you want? (1-10)</label>
-            <input type="number" id="question-count" min="1" max="10" value="5">
+            <label for="question-count">How many questions do you want? (1-5)</label>
+            <input type="number" id="question-count" min="1" max="5" value="5">
             <button id="start-quiz" class="btn">Start Quiz</button>
         </div>
 
@@ -230,20 +233,20 @@
         </div>
 
         <div id="results-container" class="hidden">
-            <h2>Your Result</h2>
+            <h2>Your Personality Profile</h2>
             <div id="result-content"></div>
             <div class="share-buttons">
                 <button class="btn share-btn" data-platform="facebook">
-                    <i class="fab fa-facebook"></i> Share
+                    <i class="fab fa-facebook"></i> Share on Facebook
                 </button>
                 <button class="btn share-btn" data-platform="twitter">
-                    <i class="fab fa-twitter"></i> Tweet
+                    <i class="fab fa-twitter"></i> Share on Twitter
                 </button>
                 <button class="btn share-btn" data-platform="whatsapp">
-                    <i class="fab fa-whatsapp"></i> Share
+                    <i class="fab fa-whatsapp"></i> Share on WhatsApp
                 </button>
             </div>
-            <button id="retake-quiz" class="btn">Retake Quiz</button>
+            <button id="retake-quiz" class="btn">Take Quiz Again</button>
         </div>
     </div>
 
