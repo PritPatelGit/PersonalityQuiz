@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://personalityquiz.fun/sitemap.xml
