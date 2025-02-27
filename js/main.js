@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const savedTheme = localStorage.getItem('theme') || 
         (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    
+
     applyTheme(savedTheme);
 
     themeBtn.addEventListener('click', () => {
@@ -32,6 +32,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentQuestionIndex = 0;
     let selectedAnswers = [];
     let quizQuestions = [];
+
+    const allQuestions = [
+        { question: "What do you prefer?", options: ["Adventure", "Creativity", "Logic", "Socializing"] },
+        { question: "How do you solve problems?", options: ["Trial & error", "Innovative ideas", "Step-by-step analysis", "Team discussions"] },
+        { question: "Your ideal weekend?", options: ["Hiking", "Painting", "Reading", "Party"] },
+        { question: "How do you handle stress?", options: ["Excitement", "Self-expression", "Logic", "Talking with friends"] },
+        { question: "What motivates you?", options: ["New experiences", "Art & ideas", "Solving problems", "People & relationships"] }
+    ];
 
     startQuizBtn.addEventListener("click", () => {
         let totalQuestions = parseInt(questionCountInput.value);
@@ -83,30 +91,72 @@ document.addEventListener("DOMContentLoaded", () => {
     function showResults() {
         quizContainer.classList.add("hidden");
         resultsContainer.classList.remove("hidden");
-        
-        // Calculate personality type based on answers
-        const personalities = ["Adventurous", "Creative", "Analytical", "Social"];
-        const personalityIndex = selectedAnswers.reduce((sum, val) => sum + val, 0) % personalities.length;
-        const personalityType = personalities[personalityIndex];
-        
+
+        // Calculate personality type
+        const personalityIndex = selectedAnswers.reduce((sum, val) => sum + val, 0) % 4;
+        const personalityType = Object.keys(personalityProfiles)[personalityIndex];
+        const profile = personalityProfiles[personalityType];
+
+        // Collect insights from answers
+        const insights = selectedAnswers.map((answer, index) => 
+            quizQuestions[index].insights[answer]
+        );
+
+        // Display detailed results
         resultContent.innerHTML = `
-            <h3>Your personality type is ${personalityType}!</h3>
-            <p>Based on your answers, you have a unique perspective on life.</p>
+            <div class="personality-result">
+                <h3>${profile.title}</h3>
+                <p class="main-message">${profile.message}</p>
+                
+                <div class="insights-section">
+                    <h4>Your Response Insights:</h4>
+                    <ul class="insights-list">
+                        ${insights.map(insight => `<li>${insight}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="strengths-section">
+                    <h4>Your Key Strengths:</h4>
+                    <ul class="strengths-list">
+                        ${profile.strengths.map(strength => `<li>${strength}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="career-section">
+                    <h4>Recommended Career Paths:</h4>
+                    <ul class="career-list">
+                        ${profile.career.map(career => `<li>${career}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="relationship-section">
+                    <h4>In Relationships:</h4>
+                    <p>${profile.relationships}</p>
+                </div>
+
+                <div class="growth-section">
+                    <h4>Growth Opportunity:</h4>
+                    <p>${profile.growth}</p>
+                </div>
+
+                <div class="quote-section">
+                    <blockquote>${profile.quote}</blockquote>
+                </div>
+            </div>
         `;
 
         // Add share button event listeners
         document.querySelectorAll('.share-btn').forEach(btn => {
-            btn.addEventListener('click', () => shareResult(btn.dataset.platform, personalityType));
+            btn.addEventListener('click', () => shareResult(btn.dataset.platform, profile.title));
         });
     }
 
-    // Add this new function for sharing
     function shareResult(platform, personalityType) {
         const text = `I got ${personalityType} personality type in this amazing quiz!`;
         const url = window.location.href;
         let shareUrl;
 
-        switch(platform) {
+        switch (platform) {
             case 'facebook':
                 shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
                 break;
