@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title class="head">Personality Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="images/QuizCover.jpeg">
+    
+    <style>
+        :root {
+            --primary-color: #00A3FF;
+            --secondary-color: #0066FF;
+            --accent-color: #00FFFF;
+            --background-color: #0A0A1F;
+            --card-bg: rgba(0, 163, 255, 0.05);
+            --text-color: #FFFFFF;
+            --shadow: 0 8px 32px 0 rgba(0, 163, 255, 0.2);
+            --gradient: linear-gradient(135deg, #00A3FF, #0066FF);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0A0A1F, #1A1A3F);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .cover-image {
+            max-width: 300px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin: 1rem 0;
+            border: 2px solid var(--primary-color);
+        }
+
+        #quiz-setup, #quiz-container, #results-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 163, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--gradient);
+            transition: width 0.5s ease;
+        }
+
+        .btn {
+            background: var(--gradient);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 163, 255, 0.4);
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 25px;
+        }
+
+        .share-btn[data-platform="facebook"] {
+            background: linear-gradient(45deg, #1877f2, #0d5ab9);
+        }
+
+        .share-btn[data-platform="twitter"] {
+            background: linear-gradient(45deg, #1da1f2, #0c85d0);
+        }
+
+        .share-btn[data-platform="whatsapp"] {
+            background: linear-gradient(45deg, #25d366, #128c7e);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+        }
+
+        .theme-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            color: var(--text-color);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--primary-color);
+        }
+
+        /* Input Styling */
+        #question-count {
+            background: rgba(0, 163, 255, 0.1);
+            border: 2px solid var(--primary-color);
+            color: var(--text-color);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            width: 100px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        /* Results Styling */
+        #result-content {
+            margin: 2rem 0;
+            padding: 1rem;
+            background: rgba(0, 163, 255, 0.1);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 163, 255, 0.2);
+        }
+
+        #result-content h3 {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+                margin: 10px;
+            }
+
+            .share-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .share-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .cover-image {
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <button id="theme-switch" class="theme-btn">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+    <div class="container">
+        <header>
+            <h1>Personality Quiz</h1>
+            <img src="images/QuizCover.jpeg" width="300" height="300" alt="Quiz Cover" class="cover-image">
+        </header>
+
+        <div id="quiz-setup">
+            <label for="question-count">How many questions do you want? (1-10)</label>
+            <input type="number" id="question-count" min="1" max="10" value="5">
+            <button id="start-quiz" class="btn">Start Quiz</button>
+        </div>
+
+        <div id="quiz-container" class="hidden">
+            <div class="progress-bar"><div class="progress"></div></div>
+            <div id="question-container"></div>
+            <div id="options-container"></div>
+        </div>
+
+        <div id="results-container" class="hidden">
+            <h2>Your Result</h2>
+            <div id="result-content"></div>
+            <div class="share-buttons">
+                <button class="btn share-btn" data-platform="facebook">
+                    <i class="fab fa-facebook"></i> Share
+                </button>
+                <button class="btn share-btn" data-platform="twitter">
+                    <i class="fab fa-twitter"></i> Tweet
+                </button>
+                <button class="btn share-btn" data-platform="whatsapp">
+                    <i class="fab fa-whatsapp"></i> Share
+                </button>
+            </div>
+            <button id="retake-quiz" class="btn">Retake Quiz</button>
+        </div>
+    </div>
+
+    <script src="js/quizData.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
